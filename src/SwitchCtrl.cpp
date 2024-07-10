@@ -40,15 +40,15 @@ EVT_TIMER(12345, wxSwitchCtrl::OnAnimationTimer)
 wxEND_EVENT_TABLE()
 
 wxSwitchCtrl::wxSwitchCtrl(wxWindow* parent,
-	wxWindowID id,
-	bool value,
-	const wxString& label,
-	const wxPoint& pos,
-	const wxSize& size,
-	long style,
-	const wxValidator& validator,
-	const wxString& name)
-	: wxControl(parent, id, pos, size, style, validator, name), m_tAnimationTimer(this, 12345)
+						   wxWindowID id,
+						   bool value,
+						   const wxString& label,
+						   const wxPoint& pos,
+						   const wxSize& size,
+						   long style,
+						   const wxValidator& validator,
+						   const wxString& name)
+: wxControl(parent, id, pos, size, style, validator, name), m_tAnimationTimer(this, 12345)
 {
 	m_sizer = new wxBoxSizer(wxVERTICAL);
 	m_sizer->AddStretchSpacer(1);

@@ -14,14 +14,14 @@ class WXDLLIMPEXP_CORE wxSwitchCtrl : public wxControl
 public:
 	wxSwitchCtrl() = default;
 	wxSwitchCtrl(wxWindow* parent,
-		wxWindowID id,
-		bool value = false,
-		const wxString& label = wxEmptyString,
-		const wxPoint& pos = wxDefaultPosition,
-		const wxSize& size = wxSize(30, 15),
-		long style = wxBORDER_NONE,
-		const wxValidator& validator = wxDefaultValidator,
-		const wxString& name = wxControlNameStr);
+				wxWindowID id,
+				bool value = false,
+				const wxString& label = wxEmptyString,
+				const wxPoint& pos = wxDefaultPosition,
+				const wxSize& size = wxSize(30, 15),
+				long style = wxBORDER_NONE,
+				const wxValidator& validator = wxDefaultValidator,
+				const wxString& name = wxControlNameStr);
 
 	virtual void SetLabel(const wxString& label) wxOVERRIDE;
 	virtual bool SetFont(const wxFont& font) wxOVERRIDE;
