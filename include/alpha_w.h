@@ -59,7 +59,10 @@ public:
 		bytes[1] = ((long)cmd >> 16) & 0xff;
 		bytes[2] = ((long)cmd >> 8) & 0xff;
 		bytes[3] = (long)cmd & 0xff;
-		hid_write(handle, bytes, 4);
+		int written = hid_write(handle, bytes, 4);
+		if (written == -1) {
+			std::cerr << "Error on sending command 0x" << std::hex << (int)cmd << ": " << hid_error(handle) << std::endl;
+		}
 	}
 
 	bool init() {

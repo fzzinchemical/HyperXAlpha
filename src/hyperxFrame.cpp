@@ -17,7 +17,7 @@ hyperxFrame::hyperxFrame(const wxChar *title, const wxPoint &pos, const wxSize &
 	// headset polling
 	timer = new wxTimer();
 	timer->Bind(wxEVT_TIMER, &hyperxFrame::on_timer, this);
-	timer->Start(10000);
+	timer->Start(5 * 60 * 1000);
 
 	taskBarIcon.Bind(wxEVT_TASKBAR_RIGHT_DOWN, &hyperxFrame::showMenu, this);
 	setTaskIcon();
@@ -139,6 +139,9 @@ void hyperxFrame::sleepChoice(wxCommandEvent &event) {
 			break;
 		case 2:
 			m_headset->send_command(commands::SLEEP_TIMER_10);
+			break;
+		case 3:
+			m_headset->send_command(commands::SLEEP_TIMER_NONE);
 			break;
 	}
 }
@@ -295,6 +298,11 @@ void hyperxFrame::read_loop() {
 		int bytesRead = m_headset->read(buffer);
 		wxGetApp().CallAfter([this, &buffer, bytesRead]() {
 			if (buffer[0] != 0x21 || buffer[1] != 0xbb) return;
+			std::cout << std::dec << "Bytes read: " << bytesRead << " \t(0x" << std::hex;
+			for (int i = 0; i < bytesRead; i++) {
+				std::cout << std::setfill('0') << std::setw(2) <<  (int)buffer[i];
+			}
+			std::cout << ")" << std::endl;
 			switch (buffer[2]) {
 				case 0x03:
 					if (buffer[3] == 0x01) {
@@ -310,20 +318,10 @@ void hyperxFrame::read_loop() {
 
 				// STILL DONT KNOW
 				case 0x05:
-					std::cout << std::dec << "Bytes read: " << bytesRead << " 0x05? \t(0x" << std::hex;
-					for (int i = 0; i < bytesRead; i++) {
-						std::cout << std::setfill('0') << std::setw(2) <<  (int)buffer[i];
-					}
-					std::cout << ")" << std::endl;
 					break;
 
 				// READ SLEEP STATE SETTTING
 				case 0x07:
-					std::cout << std::dec  << "Bytes read: " << bytesRead << " Sleep \t(0x" << std::hex;
-					for (int i = 0; i < bytesRead; i++) {
-						std::cout << std::setfill('0') << std::setw(2) << (int)buffer[i];
-					}
-					std::cout << ")" << std::endl;
 					switch (buffer[3]) {
 						case 0x00:
 							sleep = sleep_time::S0;
@@ -357,11 +355,6 @@ void hyperxFrame::read_loop() {
 
 				// STILL DONT KNOW
 				case 0x0a:
-					std::cout << std::dec << "Bytes read: " << bytesRead << " 0x0a? \t(0x" << std::hex;
-					for (int i = 0; i < bytesRead; i++) {
-						std::cout << std::setfill('0') << std::setw(2) << (int)buffer[i];
-					}
-					std::cout << ")" << std::endl;
 					break;
 
 				// Battery Check
@@ -375,11 +368,6 @@ void hyperxFrame::read_loop() {
 
 				// PING IM GUESSING?
 				case 0x0c:
-					// std::cout << std::dec << "Bytes read: " << bytesRead << " Ping? \t(0x" << std::hex;
-					// for (int i = 0; i < bytesRead; i++) {
-					// 	std::cout << std::setfill('0') << std::setw(2) << (int)buffer[i];
-					// }
-					// std::cout << ")" << std::endl;
 					break;
 
 				case 0x0d:
@@ -391,18 +379,23 @@ void hyperxFrame::read_loop() {
 
 				// RESPONSE TO SLEEP TIMER SET
 				case 0x12:
+					std::cout << "Sleep set to: ";
 					switch (buffer[3]) {
 						case 0x00:
+							std::cout << "Never" << std::endl;
 							sleep = S0;
 							break;
 						case 0x0a:
 							sleep = S10;
+							std::cout << "10 minutes" << std::endl;
 							break;
 						case 0x14:
 							sleep = S20;
+							std::cout << "20 minutes" << std::endl;
 							break;
 						case 0x1e:
 							sleep = S30;
+							std::cout << "30 minutes" << std::endl;
 							break;
 					}
 					break;
