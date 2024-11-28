@@ -1,10 +1,14 @@
 ## Differences in this fork
 
-This fork has:
+Stroopwafe1's fork has:
 
 - Removed the PulseAudio requirement
 - Added the "Never" sleep option
 - Added some logging
+
+This fork has:
+
+- Added more logging when initializing device
 
 ## Thanks
 
