@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project (HyperX)
+project(HyperX)
 
 set(C++_STANDARD 17)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
@@ -20,7 +20,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
-add_executable(HyperX src/hyperxApp.cpp src/hyperxFrame.cpp src/SwitchCtrl.cpp src/dialog.cpp)
+add_executable(HyperX src/hyperxApp.cpp src/hyperxFrame.cpp src/SwitchCtrl.cpp src/dialog.cpp src/HeadsetConfig.cpp)
 include(${wxWidgets_USE_FILE})
 target_link_libraries(HyperX PRIVATE hidapi::libusb ${wxWidgets_LIBRARIES})
 target_link_libraries(HyperX PRIVATE nlohmann_json::nlohmann_json)

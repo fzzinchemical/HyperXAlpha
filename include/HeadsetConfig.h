@@ -3,6 +3,7 @@
 
 #include <wx/arrstr.h>
 #include "alpha_w.h"
+#include <nlohmann/json.hpp>
 
 struct HeadsetConfig
 {
@@ -18,5 +19,8 @@ struct HeadsetConfig
     bool mic_monitor;
     const wxArrayString choices;
 };
+
+    void to_json(nlohmann::json& j, const HeadsetConfig& config);
+    void from_json(const nlohmann::json& j, HeadsetConfig& config);
 
 #endif

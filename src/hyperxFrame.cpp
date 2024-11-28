@@ -3,29 +3,35 @@
 #include "hyperxApp.h"
 #include <iomanip>
 
+void hyperxFrame::setHeadsetData(const nlohmann::json& jsonData) {
+	from_json(jsonData, m_config);
+}
+
+HeadsetConfig hyperxFrame::getHeadsetData() {
+	return m_config;
+}
+
+wxString hyperxFrame::getRunDir() const {
+    return m_runDir;
+}
+
 hyperxFrame::hyperxFrame(const wxChar *title, const wxPoint &pos, const wxSize &size, const wxChar *runDir) :
-						wxFrame(nullptr, wxID_ANY, title, pos, size), m_headset(new headset), wanted(true), m_runDir(runDir), running(true) {
-	if (!m_headset->init()) {
-		dialog *error =
-		new dialog(_T("HyperX Cloud Alpha Unavailable"), wxDefaultPosition,
-				   wxSize(440, 150), m_runDir + _T("img/poweredOff.png"));
-		delete m_headset;
-		throw std::runtime_error("Failed to initialize headset");
-	}
-
-	t = std::thread(&hyperxFrame::read_loop, this);
-	// headset polling
-	timer = new wxTimer();
-	timer->Bind(wxEVT_TIMER, &hyperxFrame::on_timer, this);
-	timer->Start(5 * 60 * 1000);
-
-	taskBarIcon.Bind(wxEVT_TASKBAR_RIGHT_DOWN, &hyperxFrame::showMenu, this);
-	setTaskIcon();
-	taskBarIcon.Bind(wxEVT_TASKBAR_LEFT_DOWN, &hyperxFrame::showWindow, this);
-
-	createFrame();
-
-	m_headset->send_command(commands::CONNECTION_STATE);
+    wxFrame(nullptr, wxID_ANY, title, pos, size), m_headset(new headset), wanted(true), m_runDir(runDir), running(true) {
+    if (!m_headset->init()) {
+        dialog *error = new dialog(_T("HyperX Cloud Alpha Unavailable"), wxDefaultPosition, wxSize(440, 150), m_runDir + _T("img/poweredOff.png"));
+        delete m_headset;
+        throw std::runtime_error("Failed to initialize headset");
+    }
+    t = std::thread(&hyperxFrame::read_loop, this);
+    // headset polling
+    timer = new wxTimer();
+    timer->Bind(wxEVT_TIMER, &hyperxFrame::on_timer, this);
+    timer->Start(5 * 60 * 1000);
+    taskBarIcon.Bind(wxEVT_TASKBAR_RIGHT_DOWN, &hyperxFrame::showMenu, this);
+    setTaskIcon();
+    taskBarIcon.Bind(wxEVT_TASKBAR_LEFT_DOWN, &hyperxFrame::showWindow, this);
+    createFrame();
+    m_headset->send_command(commands::CONNECTION_STATE);
 }
 
 // Status update from headset

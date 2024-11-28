@@ -5,6 +5,7 @@
 #include <wx/taskbar.h>
 #include <wx/wx.h>
 #include <atomic>
+#include <nlohmann/json.hpp>
 
 #include "SwitchCtrl.h"
 #include "alpha_w.h"
@@ -14,6 +15,10 @@
 class hyperxFrame : public wxFrame {
 public:
 	hyperxFrame(const wxChar *title, const wxPoint &pos, const wxSize &size, const wxChar *runDir);
+	void setHeadsetData(const nlohmann::json& jsonData);
+	HeadsetConfig getHeadsetData();
+	wxString getRunDir() const;
+	HeadsetConfig getConfig() { return m_config; }
 
 private:
 	// Main layout
@@ -47,8 +52,9 @@ private:
 	// headset data
 	headset *m_headset;
 	HeadsetConfig m_config;
-	//TODO use a class to represent this data
-	sleep_time sleep;
+
+	//TODO use a struct to represent this data
+	// sleep_time sleep;
 	connection_status status;
 	unsigned int battery;
 	// bool micMuted;
