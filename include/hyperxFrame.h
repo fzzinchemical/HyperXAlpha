@@ -8,6 +8,7 @@
 
 #include "SwitchCtrl.h"
 #include "alpha_w.h"
+#include "HeadsetConfig.h"
 
 // main window
 class hyperxFrame : public wxFrame {
@@ -45,15 +46,17 @@ private:
 
 	// headset data
 	headset *m_headset;
+	HeadsetConfig m_config;
+	//TODO use a class to represent this data
 	sleep_time sleep;
 	connection_status status;
 	unsigned int battery;
-	bool micMuted;
-	bool muted;
-	bool voice;
-	bool mic_monitor;
+	// bool micMuted;
+	// bool muted;
+	// bool voice;
+	// bool mic_monitor;
 	unsigned long identifier;
-	const wxArrayString choices = {_T("30 Minutes"), _T("20 Minutes"), _T("10 Minutes"), _T("Never")};
+	// const wxArrayString choices = {_T("30 Minutes"), _T("20 Minutes"), _T("10 Minutes"), _T("Never")};
 
 	// callback functions for controls
 	void createFrame();

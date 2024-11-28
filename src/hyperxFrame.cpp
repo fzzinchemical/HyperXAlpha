@@ -61,7 +61,7 @@ void hyperxFrame::showMenu(wxTaskBarIconEvent &event) {
 	if (connection_status::CONNECTED == status) {
 		taskMenu->Append(hOPEN, (IsShown()) ? _T("Hide") : _T("Show"), _T(""),
 						 wxITEM_NORMAL);
-		taskMenu->Append(hMUTE, (micMuted) ? _T("Unmute") : _T("Mute"), _T(""),
+		taskMenu->Append(hMUTE, (m_config.micMuted) ? _T("Unmute") : _T("Mute"), _T(""),
 						 wxITEM_NORMAL);
 	} else {
 		taskMenu->Append(wxID_ANY, _T("Power Off"), _T(""), wxITEM_NORMAL);
@@ -230,7 +230,7 @@ void hyperxFrame::createFrame() {
 	// sleepTimer
 	sleepTimerLabel = new wxStaticText(panel, wxID_ANY, _T("Sleep Timer"));
 	sleepTimer =
-	new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices);
+	new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_config.choices);
 	sleepTimer->SetSelection(0);
 	sleepTimer->SetToolTip(_T("Set Sleep Timer"));
 	sleepTimer->Bind(wxEVT_CHOICE, &hyperxFrame::sleepChoice, this);
@@ -324,19 +324,19 @@ void hyperxFrame::read_loop() {
 				case 0x07:
 					switch (buffer[3]) {
 						case 0x00:
-							sleep = sleep_time::S0;
+							m_config.sleep = sleep_time::S0;
 							sleepTimer->SetSelection(3);
 							break;
 						case 0x0a:
-							sleep = sleep_time::S30;
+							m_config.sleep = sleep_time::S30;
 							sleepTimer->SetSelection(0);
 							break;
 						case 0x14:
-							sleep = sleep_time::S20;
+							m_config.sleep = sleep_time::S20;
 							sleepTimer->SetSelection(1);
 							break;
 						case 0x1e:
-							sleep = sleep_time::S10;
+							m_config.sleep = sleep_time::S10;
 							sleepTimer->SetSelection(2);
 							break;
 					}
@@ -345,10 +345,10 @@ void hyperxFrame::read_loop() {
 				// VOICE PROMPTS
 				case 0x09:
 					if (buffer[3] == 0x01) {
-						voice = true;
+						m_config.voice = true;
 						voicePrompt->SetValue(true);
 					} else if (buffer[3] == 0x00) {
-						voice = false;
+						m_config.voice = false;
 						voicePrompt->SetValue(false);
 					}
 					break;
@@ -383,18 +383,18 @@ void hyperxFrame::read_loop() {
 					switch (buffer[3]) {
 						case 0x00:
 							std::cout << "Never" << std::endl;
-							sleep = S0;
+							m_config.sleep = S0;
 							break;
 						case 0x0a:
-							sleep = S10;
+							m_config.sleep = S10;
 							std::cout << "10 minutes" << std::endl;
 							break;
 						case 0x14:
-							sleep = S20;
+							m_config.sleep = S20;
 							std::cout << "20 minutes" << std::endl;
 							break;
 						case 0x1e:
-							sleep = S30;
+							m_config.sleep = S30;
 							std::cout << "30 minutes" << std::endl;
 							break;
 					}
@@ -403,19 +403,19 @@ void hyperxFrame::read_loop() {
 				// VOICE PROMPT RESPONSE
 				case 0x13:
 					if (buffer[3] == 0x00) {
-						voice = false;
+						m_config.voice = false;
 					} else if (buffer[3] == 0x01) {
-						voice = true;
+						m_config.voice = true;
 					}
 					break;
 
 				// MICMONIITOR RESPONSE
 				case 0x22:
 					if (buffer[3] == 0x00) {
-						mic_monitor = false;
+						m_config.mic_monitor = false;
 						micMonitor->SetValue(false);
 					} else if (buffer[3] == 0x01) {
-						mic_monitor = true;
+						m_config.mic_monitor = true;
 						micMonitor->SetValue(true);
 					}
 					break;
@@ -423,10 +423,10 @@ void hyperxFrame::read_loop() {
 				// MIC mute
 				case 0x23:
 					if (buffer[3] == 0x00) {
-						muted = false;
+						m_config.muted = false;
 						micMute->SetValue(false);
 					} else if (buffer[3] == 0x01) {
-						muted = true;
+						m_config.muted = true;
 						micMute->SetValue(true);
 					}
 					break;
